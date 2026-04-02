@@ -22,3 +22,8 @@ class Quest:
     def __repr__(self) -> str:
 
         return f"name= {self.name!r}, items= {self.items!r}"
+
+    @property
+    def items(self) -> dict[str, int]:
+        """Returns a safe, read-only copy of the quest requirements."""
+        return self._items.copy()

@@ -56,3 +56,17 @@ class QuestLogManager:
         except json.JSONDecodeError:
             print(f"CRITICAL ERROR: '{path}' is not valid JSON.")
             return {}
+
+    def _is_quest_completable(self, quest: Quest) -> bool:
+        for name, cnt in quest.items.items():
+            if not self._inventory.is_available(name, cnt):
+                return False
+        return True
+
+    def plan(self) -> list[Quest]:
+        """Filters and returns a list of only completable quests."""
+        return [
+            quest.name
+            for quest in self._quests.values()
+            if self._is_quest_completable(quest)
+        ]
