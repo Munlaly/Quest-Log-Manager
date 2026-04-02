@@ -1,20 +1,20 @@
 class Inventory:
     def __init__(self, items: dict[str, int] = None) -> None:
         if items is None:
-            self.items = {}
+            self._items = {}
         else:
-            self.items = items.copy()
+            self._items = items.copy()
 
     def __str__(self) -> str:
         output: list[str] = ["Inventory:"]
 
-        for item, cnt in self.items.items():
+        for item, cnt in self._items.items():
             output.append(f"\t{item} : {cnt}")
 
         return "\n".join(output)
 
     def __repr__(self) -> str:
-        return f"items= {str(self.items)}"
+        return f"items= {str(self._items)}"
 
     def add_item(self, name: str, cnt: int) -> None:
         """Adds a given number of an item to the inventory"""
@@ -26,7 +26,7 @@ class Inventory:
         #  standardize name
         name = name.strip().lower()
 
-        self.items[name] = self.items.get(name, 0) + cnt
+        self._items[name] = self._items.get(name, 0) + cnt
 
     def use_item(self, name: str, cnt: int) -> None:
         """
@@ -40,12 +40,12 @@ class Inventory:
 
         #  standardize name
         name = name.strip().lower()
-        num_item = self.items.get(name, 0)
+        num_item = self._items.get(name, 0)
 
         if not self.is_available(name, cnt):
             raise ValueError(f"Cannot use {cnt} {name}, because {num_item} exists!")
         else:
-            self.items[name] -= cnt
+            self._items[name] -= cnt
 
     def is_available(self, name: str, cnt: int = 1) -> bool:
         """
@@ -54,9 +54,9 @@ class Inventory:
         """
         #  standardize name
         name = name.strip().lower()
-        return self.items.get(name, 0) >= cnt
+        return self._items.get(name, 0) >= cnt
 
     def get_item_count(self, name: str) -> int:
         """Returns the current quantity of an item in the inventory."""
         name = name.strip().lower()
-        return self.items.get(name, 0)
+        return self._items.get(name, 0)
