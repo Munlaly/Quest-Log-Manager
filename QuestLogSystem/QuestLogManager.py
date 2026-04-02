@@ -1,0 +1,58 @@
+import json
+from Inventory import Inventory
+from Quest import Quest
+
+
+class QuestLogManager:
+    def __init__(self, paths: dict[str, str]) -> None:
+        # get file and dir paths
+        self._quest_file = paths.get("quest_file")
+        self._inventory_file = paths.get("inventory_file")
+        self._reports_dir = paths.get("reports_dir")
+        self._processes_dir = paths.get("processes_dir")
+
+        self._inventory: Inventory = Inventory(
+            QuestLogManager._load_inventory(self._inventory_file)
+        )
+
+        self._quests: dict[str, Quest] = QuestLogManager._load_quests(self._quest_file)
+
+    @staticmethod
+    def _load_inventory(path: str) -> dict[str, int]:
+        try:
+            with open(path, "r") as file:
+                return json.load(file)
+
+        except FileNotFoundError as e:
+            print(f"CRITICAL ERROR: Inventory file '{path}' not found.")
+            return {}
+        except json.JSONDecodeError as e:
+            print(f"CRITICAL ERROR: '{path}' is not valid JSON.")
+            return {}
+
+    @staticmethod
+    def _load_quests(path: str) -> dict[str, Quest]:
+        quests_dict: dict[str, Quest] = {}
+        try:
+            with open(path, "r") as file:
+                # parse JSON array into a list of dicts
+                quest_data_list = json.load(file)
+
+                for q_dict in quest_data_list:
+                    name = q_dict.get("name")
+                    items = q_dict.get("items", {})
+
+                    new_quest = Quest(name, items)
+
+                    # store the names in lowercase for easy lookups
+                    name = name.strip().lower()
+                    quests_dict[name] = new_quest
+
+            return quests_dict
+
+        except FileNotFoundError:
+            print(f"CRITICAL ERROR: Quest file '{path}' not found.")
+            return {}
+        except json.JSONDecodeError:
+            print(f"CRITICAL ERROR: '{path}' is not valid JSON.")
+            return {}

@@ -1,6 +1,6 @@
 {
     "quest_file": "data/quests.json",
-    "inventory_file": "data/inventory.jon",
+    "inventory_file": "data/inventory.json",
     "reports_dir": "reports",
     "processes_dir": "processes"
 }

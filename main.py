@@ -3,7 +3,7 @@ import json
 import os
 
 
-def load_config(path: str = "config.json"):
+def load_config(path: str = "config.json") -> dict[str:str]:
     try:
         with open(path, "r") as file:
             return json.load(file)
@@ -16,7 +16,7 @@ def load_config(path: str = "config.json"):
 
 
 if __name__ == "__main__":
-    config = load_config()
+    config: dict[str:str] = load_config()
 
     # set up files and dirs
     quest_file = config.get("quest_file")
