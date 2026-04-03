@@ -17,6 +17,7 @@ class QuestLogManager:
 
         self._quests: dict[str, Quest] = QuestLogManager._load_quests(self._quest_file)
 
+    # helpers
     @staticmethod
     def _load_inventory(path: str) -> dict[str, int]:
         try:
@@ -63,6 +64,17 @@ class QuestLogManager:
                 return False
         return True
 
+    def _save_inventory(self):
+        """Saves the current inventory state back to the JSON file."""
+        try:
+            with open(self._inventory_file, "w") as f:
+                json.dump(self._inventory.items, f, indent=4)
+
+        except IOError as e:
+            print(f"ERROR: Failed to save inventory to '{self._inventory_file}'.")
+            print(f"Details: {e}")
+
+    # callable methods
     def plan(self) -> list[str]:
         """Filters and returns a list of only completable quests."""
         return [
@@ -82,4 +94,14 @@ class QuestLogManager:
         for item, cnt in quest.items.items():
             self._inventory.use_item(item, cnt)
 
-        # persistance goes here
+        self._save_inventory()
+
+    def add_to_inventory(self, name: str, cnt: int):
+        """Adds item to inventory and saves the state."""
+        self._inventory.add_item(name, cnt)
+        self._save_inventory()
+
+    def use_from_inventory(self, name: str, cnt: int):
+        """Removes item from inventory and saves the state."""
+        self._inventory.use_item(name, cnt)
+        self._save_inventory()
