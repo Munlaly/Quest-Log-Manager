@@ -18,7 +18,6 @@ class Inventory:
 
     def add_item(self, name: str, cnt: int) -> None:
         """Adds a given number of an item to the inventory"""
-        """Adds a given number of an item to the inventory"""
         if cnt < 0:
             raise ValueError(
                 f"Cannot add a negative quantity ({cnt}). Use 'use_item' to remove items."

@@ -63,10 +63,23 @@ class QuestLogManager:
                 return False
         return True
 
-    def plan(self) -> list[Quest]:
+    def plan(self) -> list[str]:
         """Filters and returns a list of only completable quests."""
         return [
             quest.name
             for quest in self._quests.values()
             if self._is_quest_completable(quest)
         ]
+
+    def complete_quest(self, quest: Quest):
+        """Consumes inventory items to complete a quest if possible."""
+        if not self._is_quest_completable(quest):
+            raise ValueError(
+                f"Quest '{quest.name}' is not completable. Missing required items."
+            )
+
+        # update inventory
+        for item, cnt in quest.items.items():
+            self._inventory.use_item(item, cnt)
+
+        # persistance goes here
