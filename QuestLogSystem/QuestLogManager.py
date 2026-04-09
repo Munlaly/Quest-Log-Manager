@@ -6,10 +6,10 @@ from Quest import Quest
 class QuestLogManager:
     def __init__(self, paths: dict[str, str]) -> None:
         # get file and dir paths
-        self._quest_file = paths.get("quest_file")
-        self._inventory_file = paths.get("inventory_file")
-        self._reports_dir = paths.get("reports_dir")
-        self._processes_dir = paths.get("processes_dir")
+        self._quest_file = paths.get("quest_file", "")
+        self._inventory_file = paths.get("inventory_file", "")
+        self._reports_dir = paths.get("reports_dir", "")
+        self._processes_dir = paths.get("processes_dir", "")
 
         self._inventory: Inventory = Inventory(
             QuestLogManager._load_inventory(self._inventory_file)
@@ -20,6 +20,7 @@ class QuestLogManager:
     # helpers
     @staticmethod
     def _load_inventory(path: str) -> dict[str, int]:
+        """Loads nventory from json file""" 
         try:
             with open(path, "r") as file:
                 return json.load(file)
@@ -32,8 +33,9 @@ class QuestLogManager:
             return {}
 
     @staticmethod
-    def _load_quests(path: str) -> dict[str, Quest]:
+    def _load_quests(path: str ) -> dict[str, Quest]:
         quests_dict: dict[str, Quest] = {}
+        """Loads the quests from the quest file"""
         try:
             with open(path, "r") as file:
                 # parse JSON array into a list of dicts
@@ -64,7 +66,7 @@ class QuestLogManager:
                 return False
         return True
 
-    def _save_inventory(self):
+    def _save_inventory(self) -> None:
         """Saves the current inventory state back to the JSON file."""
         try:
             with open(self._inventory_file, "w") as f:
@@ -83,7 +85,7 @@ class QuestLogManager:
             if self._is_quest_completable(quest)
         ]
 
-    def complete_quest(self, quest: Quest):
+    def complete_quest(self, quest: Quest) -> None:
         """Consumes inventory items to complete a quest if possible."""
         if not self._is_quest_completable(quest):
             raise ValueError(
@@ -96,12 +98,26 @@ class QuestLogManager:
 
         self._save_inventory()
 
-    def add_to_inventory(self, name: str, cnt: int):
-        """Adds item to inventory and saves the state."""
+    def add_to_inventory(self, name: str, cnt: int) -> None:
+        """
+        Adds item to inventory and saves the state.
+        Errors will bubble up.
+        """
         self._inventory.add_item(name, cnt)
         self._save_inventory()
 
-    def use_from_inventory(self, name: str, cnt: int):
-        """Removes item from inventory and saves the state."""
+    def use_from_inventory(self, name: str, cnt: int) -> None:
+        """
+        Removes item from inventory and saves the state.
+        Errors will bubble up.
+        """
         self._inventory.use_item(name, cnt)
         self._save_inventory()
+        
+    def gap(self, quest_name:str) -> dict[str, int]:
+        if quest_name not in self._quests:
+            raise ValueError(f'Quest with name: {quest_name} does not exist')
+        
+        return {}
+        
+        

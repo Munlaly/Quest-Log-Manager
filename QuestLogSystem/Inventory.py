@@ -1,5 +1,5 @@
 class Inventory:
-    def __init__(self, items: dict[str, int] = None) -> None:
+    def __init__(self, items: dict[str, int] | None = None) -> None:
         if items is None:
             self._items = {}
         else:
@@ -59,3 +59,8 @@ class Inventory:
         """Returns the current quantity of an item in the inventory."""
         name = name.strip().lower()
         return self._items.get(name, 0)
+    
+    @property
+    def items(self) -> dict[str, int]:
+        """Returns a safe copy of the inventory items."""
+        return self._items.copy()

@@ -1,11 +1,11 @@
 class Quest:
-    def __init__(self, name: str, items: dict[str:int] = None) -> None:
+    def __init__(self, name: str, items: dict[str, int] | None = None) -> None:
         self.name: str = name
 
         if items is None:
-            self.items: dict[str, int] = {}
+            self._items: dict[str, int] = {}
         else:
-            self.items: dict[str, int] = items.copy()
+            self._items: dict[str, int] = items.copy()
 
     def __str__(self) -> str:
         output: list[str] = [f"Quest: {self.name}"]
