@@ -130,3 +130,10 @@ class QuestLogManager:
                 missing[name] = cnt - current_cnt
 
         return missing
+    
+    @property
+    def inventory(self)->dict[str,int]:
+        return self._inventory.items
+    
+    def quests(self) -> dict[str,Quest]:
+        return self._quests.copy()
