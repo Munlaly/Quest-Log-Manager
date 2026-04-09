@@ -20,7 +20,7 @@ class QuestLogManager:
     # helpers
     @staticmethod
     def _load_inventory(path: str) -> dict[str, int]:
-        """Loads nventory from json file""" 
+        """Loads nventory from json file"""
         try:
             with open(path, "r") as file:
                 return json.load(file)
@@ -33,9 +33,9 @@ class QuestLogManager:
             return {}
 
     @staticmethod
-    def _load_quests(path: str ) -> dict[str, Quest]:
-        quests_dict: dict[str, Quest] = {}
+    def _load_quests(path: str) -> dict[str, Quest]:
         """Loads the quests from the quest file"""
+        quests_dict: dict[str, Quest] = {}
         try:
             with open(path, "r") as file:
                 # parse JSON array into a list of dicts
@@ -77,14 +77,6 @@ class QuestLogManager:
             print(f"Details: {e}")
 
     # callable methods
-    def plan(self) -> list[str]:
-        """Filters and returns a list of only completable quests."""
-        return [
-            quest.name
-            for quest in self._quests.values()
-            if self._is_quest_completable(quest)
-        ]
-
     def complete_quest(self, quest: Quest) -> None:
         """Consumes inventory items to complete a quest if possible."""
         if not self._is_quest_completable(quest):
@@ -113,11 +105,27 @@ class QuestLogManager:
         """
         self._inventory.use_item(name, cnt)
         self._save_inventory()
-        
-    def gap(self, quest_name:str) -> dict[str, int]:
-        if quest_name not in self._quests:
-            raise ValueError(f'Quest with name: {quest_name} does not exist')
-        
-        return {}
-        
-        
+
+    def plan(self) -> list[str]:
+        """Filters and returns a list of only completable quests."""
+        return [
+            quest.name
+            for quest in self._quests.values()
+            if self._is_quest_completable(quest)
+        ]
+
+    def gap(self, quest_name: str) -> dict[str, int]:
+        """Performs the gap analysis"""
+        clean_name = quest_name.strip().lower()
+
+        if clean_name not in self._quests:
+            raise ValueError(f"Quest with name: {clean_name} does not exist")
+
+        missing: dict[str, int] = {}
+        target_quest = self._quests[clean_name]
+        for name, cnt in target_quest.items.items():
+            current_cnt = self._inventory.get_item_count(name)
+            if cnt > current_cnt:
+                missing[name] = cnt - current_cnt
+
+        return missing
