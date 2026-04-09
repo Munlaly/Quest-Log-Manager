@@ -14,4 +14,11 @@ class Cli:
             "inventory use": self._manager.use_from_inventory
         }
         
+    def read_line(self) -> str:
+        """Reads a single line of input from the terminal."""
+        try:
+            return input('> ').strip()
+        except (EOFError, KeyboardInterrupt):
+            # Gracefully handle Ctrl+C or Ctrl+D
+            return "exit"
     
