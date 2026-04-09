@@ -1,9 +1,11 @@
 import sys
-import json
-import os
+import json 
+from pathlib import Path
+
+from QuestLogSystem.QuestLogManager import QuestLogManager
 
 
-def load_config(path: str = "config.json") -> dict[str:str]:
+def load_config(path: Path = Path("config.json")) -> dict[str,str]:
     try:
         with open(path, "r") as file:
             return json.load(file)
@@ -16,14 +18,16 @@ def load_config(path: str = "config.json") -> dict[str:str]:
 
 
 if __name__ == "__main__":
-    config: dict[str:str] = load_config()
-
+    config: dict[str,str] = load_config()
+    
     # set up files and dirs
-    quest_file = config.get("quest_file")
-    inventory_file = config.get("inventory_file")
-    reports_dir = config.get("repors_dir")
-    processes_dir = config.get("processes_dir")
-
+    quest_file: Path = Path(config.get("quest_file", ""))
+    inventory_file: Path = Path(config.get("inventory_file", ""))
+    reports_dir: Path = Path(config.get("reports_dir",""))
+    processes_dir: Path = Path(config.get("processes_dir",""))
+    
+    manager:QuestLogManager = QuestLogManager(config)
+   
     print("--- Booting QuestLog System ---")
     print(f"Loaded Quest File Path: {quest_file}")
     print(f"Loaded Inventory File Path: {inventory_file}")

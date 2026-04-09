@@ -1,15 +1,16 @@
 import json
-from Inventory import Inventory
-from Quest import Quest
+from pathlib import Path
+from QuestLogSystem.Inventory import Inventory
+from QuestLogSystem.Quest import Quest
 
 
 class QuestLogManager:
     def __init__(self, paths: dict[str, str]) -> None:
         # get file and dir paths
-        self._quest_file = paths.get("quest_file", "")
-        self._inventory_file = paths.get("inventory_file", "")
-        self._reports_dir = paths.get("reports_dir", "")
-        self._processes_dir = paths.get("processes_dir", "")
+        self._quest_file: Path  = Path(paths.get("quest_file", ""))
+        self._inventory_file: Path = Path (paths.get("inventory_file", ""))
+        self._reports_dir:Path = Path(paths.get("reports_dir", ""))
+        self._processes_dir: Path = Path(paths.get("processes_dir", ""))
 
         self._inventory: Inventory = Inventory(
             QuestLogManager._load_inventory(self._inventory_file)
@@ -19,25 +20,25 @@ class QuestLogManager:
 
     # helpers
     @staticmethod
-    def _load_inventory(path: str) -> dict[str, int]:
+    def _load_inventory(path: Path) -> dict[str, int]:
         """Loads nventory from json file"""
         try:
             with open(path, "r") as file:
                 return json.load(file)
 
-        except FileNotFoundError as e:
+        except FileNotFoundError :
             print(f"CRITICAL ERROR: Inventory file '{path}' not found.")
             return {}
-        except json.JSONDecodeError as e:
+        except json.JSONDecodeError:
             print(f"CRITICAL ERROR: '{path}' is not valid JSON.")
             return {}
 
     @staticmethod
-    def _load_quests(path: str) -> dict[str, Quest]:
+    def _load_quests(path: Path) -> dict[str, Quest]:
         """Loads the quests from the quest file"""
         quests_dict: dict[str, Quest] = {}
         try:
-            with open(path, "r") as file:
+            with open(path, 'r') as file:
                 # parse JSON array into a list of dicts
                 quest_data_list = json.load(file)
 
