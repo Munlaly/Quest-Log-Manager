@@ -11,3 +11,6 @@ wheels/
 
 # test functionality and correctness
 tests
+
+#vscode files
+.vscode
