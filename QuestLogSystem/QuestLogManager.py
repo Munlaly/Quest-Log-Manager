@@ -13,14 +13,14 @@ class QuestLogManager:
         self._processes_dir: Path = Path(paths.get("processes_dir", ""))
 
         self._inventory: Inventory = Inventory(
-            QuestLogManager._load_inventory(self._inventory_file)
+            QuestLogManager.load_inventory(self._inventory_file)
         )
 
-        self._quests: dict[str, Quest] = QuestLogManager._load_quests(self._quest_file)
+        self._quests: dict[str, Quest] = QuestLogManager.load_quests(self._quest_file)
 
     # helpers
     @staticmethod
-    def _load_inventory(path: Path) -> dict[str, int]:
+    def load_inventory(path: Path) -> dict[str, int]:
         """Loads nventory from json file"""
         try:
             with open(path, "r") as file:
@@ -34,7 +34,7 @@ class QuestLogManager:
             return {}
 
     @staticmethod
-    def _load_quests(path: Path) -> dict[str, Quest]:
+    def load_quests(path: Path) -> dict[str, Quest]:
         """Loads the quests from the quest file"""
         quests_dict: dict[str, Quest] = {}
         try:
@@ -61,13 +61,15 @@ class QuestLogManager:
             print(f"CRITICAL ERROR: '{path}' is not valid JSON.")
             return {}
 
+    #private methods
     def _is_quest_completable(self, quest: Quest) -> bool:
         for name, cnt in quest.items.items():
             if not self._inventory.is_available(name, cnt):
                 return False
         return True
 
-    def _save_inventory(self) -> None:
+    # public methods
+    def save_inventory(self) -> None:
         """Saves the current inventory state back to the JSON file."""
         try:
             with open(self._inventory_file, "w") as f:
@@ -77,7 +79,7 @@ class QuestLogManager:
             print(f"ERROR: Failed to save inventory to '{self._inventory_file}'.")
             print(f"Details: {e}")
 
-    # callable methods
+   
     def complete_quest(self, quest: Quest) -> None:
         """Consumes inventory items to complete a quest if possible."""
         if not self._is_quest_completable(quest):
@@ -89,7 +91,7 @@ class QuestLogManager:
         for item, cnt in quest.items.items():
             self._inventory.use_item(item, cnt)
 
-        self._save_inventory()
+        self.save_inventory()
 
     def add_to_inventory(self, name: str, cnt: int) -> None:
         """
@@ -97,7 +99,7 @@ class QuestLogManager:
         Errors will bubble up.
         """
         self._inventory.add_item(name, cnt)
-        self._save_inventory()
+        self.save_inventory()
 
     def use_from_inventory(self, name: str, cnt: int) -> None:
         """
@@ -105,7 +107,7 @@ class QuestLogManager:
         Errors will bubble up.
         """
         self._inventory.use_item(name, cnt)
-        self._save_inventory()
+        self.save_inventory()
 
     def plan(self) -> list[str]:
         """Filters and returns a list of only completable quests."""
