@@ -3,7 +3,7 @@ from QuestLogSystem.QuestLogManager import QuestLogManager
 from typing import Callable, Any
 
 class Cli:
-    def __init__(self, manager: QuestLogManager) -> None:
+    def __init__(self, manager: QuestLogManager, extra_commands: dict[str, Callable[...,Any]] = {}) -> None:
         self._manager = manager
         
         self._commands: dict[str, Callable[..., Any]] = {
@@ -14,11 +14,13 @@ class Cli:
             "inventory use": self._manager.use_from_inventory
         }
         
+        self._commands |= extra_commands
+        
     def read_line(self) -> str:
         """Reads a single line of input from the terminal."""
         try:
             return input('> ').strip()
         except (EOFError, KeyboardInterrupt):
-            # Gracefully handle Ctrl+C or Ctrl+D
+            #handle Ctrl+C or Ctrl+D
             return "exit"
     
