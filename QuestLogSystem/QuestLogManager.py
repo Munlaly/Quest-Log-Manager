@@ -140,8 +140,13 @@ class QuestLogManager:
         return missing
     
     def set_to_interactive(self)->None:
+        '''Sets the mode to interactive'''
         self._mode = Mode.INTERACTIVE
+        
+    def process(self, command_file:Path)->None:
+        pass
     
+    #Getters
     @property
     def inventory(self)->dict[str,int]:
         return self._inventory.items

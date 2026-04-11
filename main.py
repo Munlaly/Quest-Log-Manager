@@ -18,7 +18,9 @@ def load_config(path: Path = Path("config.json")) -> dict[str,str]:
         print(f"CRITICAL ERROR: '{path}' is not valid JSON.")
         sys.exit(1)
         
-        
+ 
+
+            
 def run()->None:
     '''Runs the main application logic'''
     config: dict[str,str] = load_config()
@@ -30,7 +32,13 @@ def run()->None:
     processes_dir: Path = Path(config.get("processes_dir",""))
     
     manager:QuestLogManager = QuestLogManager(config)
-    cli: Cli = Cli(manager)
+    
+    #sub functions
+    def exit()->None:
+        manager.save_inventory()
+        sys.exit(0)
+        
+    cli: Cli = Cli(manager, {"exit": exit})
     print(cli)
    
     print("--- Booting QuestLog System ---")
@@ -39,13 +47,13 @@ def run()->None:
     print(f"Loaded Reports Directory Path: {reports_dir}")
     print(f"Loaded Processes Directory Path: {processes_dir}\n")
 
-     #parese and execute first terminal argument
-    
+    #parese and execute first terminal argument
     
     if manager.mode == Mode.INTERACTIVE:
         while True:
             line = cli.read_line()
             print(line)
+
 
 
 if __name__ == "__main__":
