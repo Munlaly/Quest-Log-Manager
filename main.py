@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from QuestLogSystem.QuestLogManager import QuestLogManager
+from QuestLogSystem.Cli import Cli
 
 
 def load_config(path: Path = Path("config.json")) -> dict[str,str]:
@@ -15,9 +16,9 @@ def load_config(path: Path = Path("config.json")) -> dict[str,str]:
     except json.JSONDecodeError:
         print(f"CRITICAL ERROR: '{path}' is not valid JSON.")
         sys.exit(1)
-
-
-if __name__ == "__main__":
+        
+        
+def run()->None:
     config: dict[str,str] = load_config()
     
     # set up files and dirs
@@ -27,9 +28,21 @@ if __name__ == "__main__":
     processes_dir: Path = Path(config.get("processes_dir",""))
     
     manager:QuestLogManager = QuestLogManager(config)
-   
+    cli: Cli = Cli(manager)
+    print(cli)
+
     print("--- Booting QuestLog System ---")
     print(f"Loaded Quest File Path: {quest_file}")
     print(f"Loaded Inventory File Path: {inventory_file}")
     print(f"Loaded Reports Directory Path: {reports_dir}")
     print(f"Loaded Processes Directory Path: {processes_dir}\n")
+
+
+
+if __name__ == "__main__":
+    try:
+        run()
+    except Exception as e:
+       print(e)
+       
+       sys.exit(1)
