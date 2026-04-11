@@ -3,7 +3,7 @@ from QuestLogSystem.QuestLogManager import QuestLogManager
 from typing import Callable, Any
 
 class Cli:
-    def __init__(self, manager: QuestLogManager, extra_commands: dict[str, Callable[...,Any]] = {}) -> None:
+    def __init__(self, manager: QuestLogManager, extra_commands: dict[str, Callable[...,Any]]| None = None) -> None:
         self._manager = manager
         
         self._commands: dict[str, Callable[..., Any]] = {
@@ -11,10 +11,11 @@ class Cli:
             "quest gap": self._manager.gap,
             "quest complete": self._manager.complete_quest,
             "inventory add": self._manager.add_to_inventory,
-            "inventory use": self._manager.use_from_inventory
+            "inventory use": self._manager.use_from_inventory,
+            "manage": self._manager.set_to_interactive
         }
-        
-        self._commands |= extra_commands
+        if extra_commands is not None:
+            self._commands |= extra_commands
         
     def read_line(self) -> str:
         """Reads a single line of input from the terminal."""

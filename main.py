@@ -2,8 +2,9 @@ import sys
 import json 
 from pathlib import Path
 
-from QuestLogSystem.QuestLogManager import QuestLogManager
+from QuestLogSystem.QuestLogManager import QuestLogManager, Mode
 from QuestLogSystem.Cli import Cli
+
 
 
 def load_config(path: Path = Path("config.json")) -> dict[str,str]:
@@ -19,6 +20,7 @@ def load_config(path: Path = Path("config.json")) -> dict[str,str]:
         
         
 def run()->None:
+    '''Runs the main application logic'''
     config: dict[str,str] = load_config()
     
     # set up files and dirs
@@ -30,13 +32,20 @@ def run()->None:
     manager:QuestLogManager = QuestLogManager(config)
     cli: Cli = Cli(manager)
     print(cli)
-
+   
     print("--- Booting QuestLog System ---")
     print(f"Loaded Quest File Path: {quest_file}")
     print(f"Loaded Inventory File Path: {inventory_file}")
     print(f"Loaded Reports Directory Path: {reports_dir}")
     print(f"Loaded Processes Directory Path: {processes_dir}\n")
 
+     #parese and execute first terminal argument
+    
+    
+    if manager.mode == Mode.INTERACTIVE:
+        while True:
+            line = cli.read_line()
+            print(line)
 
 
 if __name__ == "__main__":

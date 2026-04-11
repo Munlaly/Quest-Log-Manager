@@ -2,15 +2,21 @@ import json
 from pathlib import Path
 from QuestLogSystem.Inventory import Inventory
 from QuestLogSystem.Quest import Quest
+from enum import Enum
 
-
+class Mode(Enum):
+    DEFAULT = 1
+    INTERACTIVE = 2
+    
 class QuestLogManager:
-    def __init__(self, paths: dict[str, str]) -> None:
+    def __init__(self, paths: dict[str, str], mode:Mode = Mode.DEFAULT) -> None:
         # get file and dir paths
         self._quest_file: Path  = Path(paths.get("quest_file", ""))
         self._inventory_file: Path = Path (paths.get("inventory_file", ""))
         self._reports_dir:Path = Path(paths.get("reports_dir", ""))
         self._processes_dir: Path = Path(paths.get("processes_dir", ""))
+        
+        self._mode = mode
 
         self._inventory: Inventory = Inventory(
             QuestLogManager.load_inventory(self._inventory_file)
@@ -133,9 +139,16 @@ class QuestLogManager:
 
         return missing
     
+    def set_to_interactive(self)->None:
+        self._mode = Mode.INTERACTIVE
+    
     @property
     def inventory(self)->dict[str,int]:
         return self._inventory.items
-    
+    @property
     def quests(self) -> dict[str,Quest]:
         return self._quests.copy()
+    
+    @property
+    def mode(self) -> Mode:
+        return self._mode
