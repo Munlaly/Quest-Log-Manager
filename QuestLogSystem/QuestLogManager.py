@@ -114,6 +114,7 @@ class QuestLogManager:
         """
         self._inventory.use_item(name, cnt)
         self.save_inventory()
+        
 
     def plan(self) -> list[str]:
         """Filters and returns a list of only completable quests."""

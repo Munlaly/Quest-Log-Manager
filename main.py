@@ -39,7 +39,6 @@ def run()->None:
         sys.exit(0)
         
     cli: Cli = Cli(manager, {"exit": exit})
-    print(cli)
    
     print("--- Booting QuestLog System ---")
     print(f"Loaded Quest File Path: {quest_file}")
@@ -47,12 +46,48 @@ def run()->None:
     print(f"Loaded Reports Directory Path: {reports_dir}")
     print(f"Loaded Processes Directory Path: {processes_dir}\n")
 
-    #parese and execute first terminal argument
+    #parse and execute first terminal command
+    if len(sys.argv) > 1:
+        initial_input = " ".join(sys.argv[1:])
+        
+        command_name, args = cli.parse_line(initial_input) 
+        
+        handler =  cli.get_command(command_name)
+        if handler:
+            try:
+                result = handler(*args)
+                    
+                if result is not None:
+                    print(result)
+                        
+            except Exception as e:
+                    print(e)
+        else:
+            print(f'Unknown command: {command_name}')
     
     if manager.mode == Mode.INTERACTIVE:
         while True:
-            line = cli.read_line()
-            print(line)
+            raw_input = cli.read_line()
+            
+            if not raw_input:
+                continue
+            
+            command_name, args = cli.parse_line(raw_input)
+            
+            handler = cli.get_command(command_name)
+            
+            if handler:
+                try:
+                    result = handler(*args)
+                    
+                    if result is not None:
+                        print(result)
+                        
+                except Exception as e:
+                    print(e)
+                    
+            else:
+                print(f'Unknown command: {command_name}')
 
 
 
