@@ -8,6 +8,10 @@ from QuestLogSystem.Cli import Cli
 
 
 def load_config(path: Path = Path("config.json")) -> dict[str,str]:
+    if not path.is_file():
+            print(f"CRITICAL ERROR: Inventory file '{path}' not found or invalid.")
+            return {}
+        
     try:
         with open(path, "r") as file:
             return json.load(file)
@@ -59,7 +63,10 @@ def run()->None:
                     
                 if result is not None:
                     print(result)
-                        
+            
+            except TypeError:
+                print(f'Invalid arguments for command \"{command_name}\"')
+                            
             except Exception as e:
                     print(e)
         else:
@@ -82,6 +89,9 @@ def run()->None:
                     
                     if result is not None:
                         print(result)
+                        
+                except TypeError:
+                    print(f'Invalid arguments for command \"{command_name}\"')
                         
                 except Exception as e:
                     print(e)

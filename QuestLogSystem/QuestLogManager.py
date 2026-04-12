@@ -28,6 +28,10 @@ class QuestLogManager:
     @staticmethod
     def load_inventory(path: Path) -> dict[str, int]:
         """Loads nventory from json file"""
+        if not path.is_file():
+            print(f"CRITICAL ERROR: Inventory file '{path}' not found or invalid.")
+            return {}
+        
         try:
             with open(path, "r") as file:
                 return json.load(file)
@@ -42,6 +46,10 @@ class QuestLogManager:
     @staticmethod
     def load_quests(path: Path) -> dict[str, Quest]:
         """Loads the quests from the quest file"""
+        if not path.is_file():
+            print(f"CRITICAL ERROR: Inventory file '{path}' not found or invalid.")
+            return {}
+        
         quests_dict: dict[str, Quest] = {}
         try:
             with open(path, 'r') as file:
@@ -101,6 +109,7 @@ class QuestLogManager:
             self._inventory.use_item(item, cnt)
 
         self.save_inventory()
+        
 
     def add_to_inventory(self, name: str, cnt: int) -> None:
         """

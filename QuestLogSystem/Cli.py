@@ -54,6 +54,10 @@ class Cli:
                 command_name = potential_two_word
                 args_raw = parts[2:]
                 
+            else:
+                command_name = parts[0]
+                args_raw = parts[1:]
+                
         else:
                 command_name = parts[0]
                 args_raw = parts[1:]
