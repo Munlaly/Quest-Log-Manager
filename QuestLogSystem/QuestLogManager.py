@@ -94,7 +94,7 @@ class QuestLogManager:
             print(f"Details: {e}")
 
    
-    def complete_quest(self, quest_name: str) -> None:
+    def complete_quest(self, quest_name: str) -> str:
         """Consumes inventory items to complete a quest if possible."""
         quest: Quest | None = self.quests.get(quest_name)
         if quest is None:
@@ -110,23 +110,25 @@ class QuestLogManager:
 
         self.save_inventory()
         
+        return f"Quest \"{quest_name}\" successfully completed!"
 
-    def add_to_inventory(self, name: str, cnt: int) -> None:
+    def add_to_inventory(self, name: str, cnt: int) -> str:
         """
         Adds item to inventory and saves the state.
         Errors will bubble up.
         """
         self._inventory.add_item(name, cnt)
         self.save_inventory()
+        return f"{cnt} {name} added!"
 
-    def use_from_inventory(self, name: str, cnt: int) -> None:
+    def use_from_inventory(self, name: str, cnt: int) -> str:
         """
         Removes item from inventory and saves the state.
         Errors will bubble up.
         """
         self._inventory.use_item(name, cnt)
         self.save_inventory()
-        
+        return f"{cnt} {name} used!"
 
     def plan(self) -> list[str]:
         """Filters and returns a list of only completable quests."""
@@ -152,9 +154,10 @@ class QuestLogManager:
 
         return missing
     
-    def set_to_interactive(self)->None:
+    def set_to_interactive(self)->str:
         '''Sets the mode to interactive'''
         self._mode = Mode.INTERACTIVE
+        return "Interactive mode entered!"
         
     def process(self, command_file:Path)->None:
         pass

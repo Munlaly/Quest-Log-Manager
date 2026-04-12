@@ -1,7 +1,7 @@
 {
-    "sword": 2,
-    "shield": 1,
-    "potion": 3,
+    "sword": 1,
+    "shield": 0,
+    "potion": 1,
     "torch": 2,
     "rope": 1,
     "map": 0,

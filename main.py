@@ -38,12 +38,13 @@ def run()->None:
     manager:QuestLogManager = QuestLogManager(config)
     
     #sub functions
-    def exit()->None:
+    def exit() -> str:
         manager.save_inventory()
         sys.exit(0)
         
     cli: Cli = Cli(manager, {"exit": exit})
    
+    #main logic
     print("--- Booting QuestLog System ---")
     print(f"Loaded Quest File Path: {quest_file}")
     print(f"Loaded Inventory File Path: {inventory_file}")
