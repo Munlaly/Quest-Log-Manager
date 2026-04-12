@@ -86,8 +86,11 @@ class QuestLogManager:
             print(f"Details: {e}")
 
    
-    def complete_quest(self, quest: Quest) -> None:
+    def complete_quest(self, quest_name: str) -> None:
         """Consumes inventory items to complete a quest if possible."""
+        quest: Quest | None = self.quests.get(quest_name)
+        if quest is None:
+            raise ValueError(f'Quest: {quest_name} dos not exist')
         if not self._is_quest_completable(quest):
             raise ValueError(
                 f"Quest '{quest.name}' is not completable. Missing required items."

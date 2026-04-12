@@ -63,7 +63,8 @@ class Cli:
             try:
                 args_final.append(int(arg))
             except ValueError:
-                args_final.append(arg)
+                #append str arg in lowercase
+                args_final.append(arg.lower())
                 
         return command_name, args_final
     
