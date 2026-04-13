@@ -18,13 +18,17 @@ class Cli:
         }
         if extra_commands is not None:
             self._commands |= extra_commands
+            
+    def __repr__(self)-> str:
+        return f'Commands: {str([ k for k in self._commands.keys()])}'
+    
     @staticmethod    
     def read_line() -> str:
         """Reads a single line of input from the terminal."""
         try:
             return input('> ').strip()
         except (EOFError, KeyboardInterrupt):
-            #handle Ctrl+C or Ctrl+D
+            #handle Ctrl+C 
             return "exit"
         
     def parse_line(self, line: str) -> tuple[str, list[Any]]:
@@ -55,11 +59,11 @@ class Cli:
                 args_raw = parts[2:]
                 
             else:
-                command_name = parts[0]
+                command_name = parts[0].lower()
                 args_raw = parts[1:]
                 
         else:
-                command_name = parts[0]
+                command_name = parts[0].lower()
                 args_raw = parts[1:]
                 
         args_final: list[Any] = []

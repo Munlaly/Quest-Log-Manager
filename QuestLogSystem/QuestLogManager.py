@@ -24,6 +24,16 @@ class QuestLogManager:
 
         self._quests: dict[str, Quest] = QuestLogManager.load_quests(self._quest_file)
 
+    def __repr__(self) -> str:
+        result: list[str] = []
+        
+        result.append(f'Current mode: {self._mode}')
+        result.append(f'Inventory: {repr(self._inventory)}')
+        result.append('Quests:')
+        result.extend([repr(q) for q in self._quests.values()])
+        
+        return '\n'.join(result)
+        
     # helpers
     @staticmethod
     def load_inventory(path: Path) -> dict[str, int]:
