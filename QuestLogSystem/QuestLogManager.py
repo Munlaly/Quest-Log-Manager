@@ -169,8 +169,6 @@ class QuestLogManager:
         self._mode = Mode.INTERACTIVE
         return "Interactive mode entered!"
         
-    def process(self, command_file:Path)->None:
-        pass
     
     #Getters
     @property

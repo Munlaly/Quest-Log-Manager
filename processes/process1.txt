@@ -1,0 +1,3 @@
+plan
+inventory add sword 1
+quest gap "Dragon Slayer"
