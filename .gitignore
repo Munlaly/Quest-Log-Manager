@@ -9,8 +9,7 @@ wheels/
 # Virtual environments
 .venv
 
-# test functionality and correctness
-tests
+# store data for backup
 backup
 
 #vscode files
