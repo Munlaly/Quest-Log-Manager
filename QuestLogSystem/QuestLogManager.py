@@ -4,18 +4,20 @@ from QuestLogSystem.Inventory import Inventory
 from QuestLogSystem.Quest import Quest
 from enum import Enum
 
+
 class Mode(Enum):
     DEFAULT = 1
     INTERACTIVE = 2
-    
+
+
 class QuestLogManager:
-    def __init__(self, paths: dict[str, str], mode:Mode = Mode.DEFAULT) -> None:
+    def __init__(self, paths: dict[str, str], mode: Mode = Mode.DEFAULT) -> None:
         # get file and dir paths
-        self._quest_file: Path  = Path(paths.get("quest_file", ""))
-        self._inventory_file: Path = Path (paths.get("inventory_file", ""))
-        self._reports_dir:Path = Path(paths.get("reports_dir", ""))
+        self._quest_file: Path = Path(paths.get("quest_file", ""))
+        self._inventory_file: Path = Path(paths.get("inventory_file", ""))
+        self._reports_dir: Path = Path(paths.get("reports_dir", ""))
         self._processes_dir: Path = Path(paths.get("processes_dir", ""))
-        
+
         self._mode = mode
 
         self._inventory: Inventory = Inventory(
@@ -26,14 +28,14 @@ class QuestLogManager:
 
     def __repr__(self) -> str:
         result: list[str] = []
-        
-        result.append(f'Current mode: {self._mode}')
-        result.append(f'Inventory: {repr(self._inventory)}')
-        result.append('Quests:')
+
+        result.append(f"Current mode: {self._mode}")
+        result.append(f"Inventory: {repr(self._inventory)}")
+        result.append("Quests:")
         result.extend([repr(q) for q in self._quests.values()])
-        
-        return '\n'.join(result)
-        
+
+        return "\n".join(result)
+
     # helpers
     @staticmethod
     def load_inventory(path: Path) -> dict[str, int]:
@@ -41,12 +43,12 @@ class QuestLogManager:
         if not path.is_file():
             print(f"CRITICAL ERROR: Inventory file '{path}' not found or invalid.")
             return {}
-        
+
         try:
             with open(path, "r") as file:
                 return json.load(file)
 
-        except FileNotFoundError :
+        except FileNotFoundError:
             print(f"CRITICAL ERROR: Inventory file '{path}' not found.")
             return {}
         except json.JSONDecodeError:
@@ -57,12 +59,12 @@ class QuestLogManager:
     def load_quests(path: Path) -> dict[str, Quest]:
         """Loads the quests from the quest file"""
         if not path.is_file():
-            print(f"CRITICAL ERROR: Inventory file '{path}' not found or invalid.")
+            print(f"CRITICAL ERROR: Quest file '{path}' not found or invalid.")
             return {}
-        
+
         quests_dict: dict[str, Quest] = {}
         try:
-            with open(path, 'r') as file:
+            with open(path, "r") as file:
                 # parse JSON array into a list of dicts
                 quest_data_list = json.load(file)
 
@@ -85,7 +87,7 @@ class QuestLogManager:
             print(f"CRITICAL ERROR: '{path}' is not valid JSON.")
             return {}
 
-    #private methods
+    # private methods
     def _is_quest_completable(self, quest: Quest) -> bool:
         for name, cnt in quest.items.items():
             if not self._inventory.is_available(name, cnt):
@@ -103,12 +105,11 @@ class QuestLogManager:
             print(f"ERROR: Failed to save inventory to '{self._inventory_file}'.")
             print(f"Details: {e}")
 
-   
     def complete_quest(self, quest_name: str) -> str:
         """Consumes inventory items to complete a quest if possible."""
         quest: Quest | None = self.quests.get(quest_name)
         if quest is None:
-            raise ValueError(f'Quest: {quest_name} dos not exist')
+            raise ValueError(f"Quest: {quest_name} does not exist")
         if not self._is_quest_completable(quest):
             raise ValueError(
                 f"Quest '{quest.name}' is not completable. Missing required items."
@@ -119,8 +120,8 @@ class QuestLogManager:
             self._inventory.use_item(item, cnt)
 
         self.save_inventory()
-        
-        return f"Quest \"{quest_name}\" successfully completed!"
+
+        return f'Quest "{quest_name}" successfully completed!'
 
     def add_to_inventory(self, name: str, cnt: int) -> str:
         """
@@ -163,21 +164,21 @@ class QuestLogManager:
                 missing[name] = cnt - current_cnt
 
         return missing
-    
-    def set_to_interactive(self)->str:
-        '''Sets the mode to interactive'''
+
+    def set_to_interactive(self) -> str:
+        """Sets the mode to interactive"""
         self._mode = Mode.INTERACTIVE
         return "Interactive mode entered!"
-        
-    
-    #Getters
+
+    # Getters
     @property
-    def inventory(self)->dict[str,int]:
+    def inventory(self) -> dict[str, int]:
         return self._inventory.items
+
     @property
-    def quests(self) -> dict[str,Quest]:
+    def quests(self) -> dict[str, Quest]:
         return self._quests.copy()
-    
+
     @property
     def mode(self) -> Mode:
         return self._mode
