@@ -39,7 +39,7 @@ class QuestLogManager:
     # helpers
     @staticmethod
     def load_inventory(path: Path) -> dict[str, int]:
-        """Loads nventory from json file"""
+        """Loads inventory from json file"""
         if not path.is_file():
             print(f"CRITICAL ERROR: Inventory file '{path}' not found or invalid.")
             return {}
